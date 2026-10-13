@@ -1,3 +1,4 @@
-python-telegram
+python-telegram-bot
 Flask
 gunicorn
+curl_cffi
