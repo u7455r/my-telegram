@@ -6,7 +6,7 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # 🔥 আপনার টেলিগ্রাম বটের টোকেন এখানে একবারই বসিয়ে দিন (এরপর আর গিটহাবে হাত দেওয়া লাগবে না)
-BOT_TOKEN = "8979502036:AAFS--S92CS7t-UngEmi4GB2xE2j3Z5YG-k"
+BOT_TOKEN = "8979502036:AAEsR-ZK2vjZjxsPMe_HHXTDrDwrZ_Gotio"
 
 bot = telebot.TeleBot(BOT_TOKEN, parse_mode="Markdown")
 
