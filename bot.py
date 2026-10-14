@@ -24,7 +24,7 @@ def keep_alive():
     t.start()
 
 # --- টেলিগ্রাম বট কনফিগারেশন ---
-BOT_TOKEN = "8979502036:AAEtECd3-YbcjjE15j0XA_v_zQpQ-2RkVNA"  # আপনার বটের টোকেন এখানে বসাবেন
+BOT_TOKEN = "8979502036:AAGIeGG4tXPDvDb01nAkRSBI8p4_Lad5Xng"  # আপনার বটের টোকেন এখানে বসাবেন
 
 bot = telebot.TeleBot(BOT_TOKEN, parse_mode="Markdown")
 
