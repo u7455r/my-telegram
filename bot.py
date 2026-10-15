@@ -13,7 +13,7 @@ app = Flask('')
 
 @app.route('/')
 def home():
-    return "🤖 Ultimate Cyberpunk Matrix Proxy Checker Bot Enterprise Edition is Live 24/7!"
+    return "🤖 Cyberpunk Matrix Proxy Checker Enterprise Masterpiece is Live 24/7!"
 
 def run_flask():
     port = int(os.environ.get("PORT", 8080))
@@ -24,11 +24,30 @@ def keep_alive():
     t.start()
 
 # --- টেলিগ্রাম বট কনফিগারেশন ---
-BOT_TOKEN = "8979502036:AAHx66mHJKV6GuS2GMz032vmDl_HrLHO5XI"  # আপনার বটের টোকেন এখানে বসাবেন
+BOT_TOKEN = "8979502036:AAHW0JX3IO2CtFEZiZvyFOZVW8UDUGFvINk"  # আপনার বটের টোকেন এখানে বসাবেন
 
 bot = telebot.TeleBot(BOT_TOKEN, parse_mode="Markdown")
 
+# আপনার অফিশিয়াল চ্যানেল এবং গ্রুপ ইউজারনেম/লিঙ্ক
+CHANNEL_USERNAME = "@bdgiveaways24"
+GROUP_USERNAME = "@bdgivewaychat"
+CHANNEL_LINK = "https://t.me/bdgiveaways24"
+GROUP_LINK = "https://t.me/bdgivewaychat"
+
 user_sessions = {}
+
+# ফোর্স সাবস্ক্রাইব (Force Subscribe) চেক করার ফাংশন
+def check_forced_subscription(user_id):
+    try:
+        chan_member = bot.get_chat_member(CHANNEL_USERNAME, user_id)
+        if chan_member.status in ['left', 'kicked']:
+            return False
+        group_member = bot.get_chat_member(GROUP_USERNAME, user_id)
+        if group_member.status in ['left', 'kicked']:
+            return False
+        return True
+    except:
+        return True 
 
 # স্মার্ট প্রক্সি ক্লিনার (অটো ফরম্যাট ফিক্সার)
 def clean_proxy_text(raw_text):
@@ -36,7 +55,7 @@ def clean_proxy_text(raw_text):
     matches = re.findall(pattern, raw_text)
     return list(set([f"{ip}:{port}" for ip, port in matches]))
 
-# সুপারসনিক অ্যাসিনক্রোনাস প্রক্সি চেকার ইঞ্জিন
+# সুপারসনিক অ্যাসিনক্রোনাস প্রক্সি চেকার ইঞ্জিন (কান্ট্রি, স্পিড ও অ্যানোনিমিটি সহ)
 async def test_single_proxy(session, proxy, p_type):
     start_time = time.time()
     
@@ -47,7 +66,7 @@ async def test_single_proxy(session, proxy, p_type):
     elif p_type == "SOCKS5":
         test_url = f"socks5://{proxy}"
     else:
-        return False, 0, "Unknown", "Dead"
+        return False, 0, "Unknown", "Dead", "Normal"
 
     try:
         async with session.get("http://ip-api.com/json/?fields=status,country", proxy=test_url, timeout=3.0) as response:
@@ -57,23 +76,41 @@ async def test_single_proxy(session, proxy, p_type):
                     speed = round((time.time() - start_time) * 1000, 2)
                     country = data.get("country", "Unknown")
                     anonymity = "Elite 🟢" if speed < 300 else ("Anonymous 🟡" if speed < 650 else "Transparent 🟠")
-                    return True, speed, country, anonymity
+                    tier = "⚡ Ultra-Fast" if speed < 250 else ("🚀 Fast" if speed < 600 else "🐢 Normal")
+                    return True, speed, country, anonymity, tier
     except:
         pass
-    return False, 0, "Unknown", "Dead"
+    return False, 0, "Unknown", "Dead", "Normal"
 
 @bot.message_handler(commands=['start', 'menu'])
 def show_main_menu(message):
+    user_id = message.from_user.id
+    
+    if not check_forced_subscription(user_id):
+        sub_markup = InlineKeyboardMarkup(row_width=1)
+        sub_markup.add(
+            InlineKeyboardButton("📢 অফিশিয়াল চ্যানেলে জয়েন করুন", url=CHANNEL_LINK),
+            InlineKeyboardButton("💬 অফিশিয়াল গ্রুপে জয়েন করুন", url=GROUP_LINK),
+            InlineKeyboardButton("🔄 জয়েন করার পর ক্লিক করুন", callback_data="check_sub")
+        )
+        sub_text = (
+            "⚠️ **অ্যাক্সেস ডিনাইড!**\n\n"
+            "এই আল্টিমেট প্রক্সি চেকার বটটি ব্যবহার করতে হলে অবশ্যই আমাদের চ্যানেল এবং গ্রুপে জয়েন থাকতে হবে!\n\n"
+            "👇 নিচে দেওয়া লিঙ্কে ক্লিক করে জয়েন করুন এবং নিচের বাটনে ক্লিক করুন:"
+        )
+        bot.reply_to(message, sub_text, reply_markup=sub_markup)
+        return
+
     menu_text = (
-        "⚡ **CYBERPUNK PROXY MATRIX [ENTERPRISE EDITION v10.0]** ⚡\n\n"
+        "🔥 **CYBERPUNK PROXY MATRIX [MASTERPIECE EDITION v12.0]** 🔥\n\n"
         "🚀 *বিশ্বের সবচেয়ে আধুনিক, দ্রুতগতিসম্পন্ন এবং ১০০% লাইভ প্রক্সি চেকার বট!*\n"
-        "*(শুধুমাত্র ১০০% কাজ করা ভ্যালিড প্রক্সি এক্সপোর্ট সিস্টেম)*\n\n"
-        "💎 **প্রিমিয়াম ম্যাট্রিক্স সিস্টেম ফিচারসমূহ:**\n"
+        "*(ডাইনামিক লাইভ লোডিং বার, কান্ট্রি ডিটেকশন ও সুপারসনিক ফাইল এক্সপোর্ট)*\n\n"
+        "💎 **মাস্টারপিস সিস্টেম ফিচারসমূহ:**\n"
         "┣ 🌐 HTTP, HTTPS, SOCKS4, SOCKS5 মাল্টি-প্রোটোকল স্ক্যানার\n"
         "┣ 🚀 **Asyncio Supersonic Engine (১০-১৫ সেকেন্ডে হাজার হাজার চেক)**\n"
         "┣ 🌍 রিয়েল-টাইম অটো কান্ট্রি ও আইপি লোকেশন ডিটেকশন\n"
-        "┣ 🛡️ অ্যাডভান্সড অ্যানোনিমিটি লেভেল চেক (Elite / Anonymous)\n"
-        "┣ 📊 **অমেজিং ডাইনামিক লাইভ লোডিং প্রোগ্রেস বার সিস্টেম**\n"
+        "┣ 🛡️ অ্যাডভান্সড অ্যানোনিমিটি লেভেল ও স্পিড টিয়ারিং চেক\n"
+        "┣ 📊 **মাথা নষ্ট করা অমেজিং ডাইনামিক লাইভ লোডিং প্রোগ্রেস বার সিস্টেম**\n"
         "┣ 📁 **শুধুমাত্র ১০০% সক্রিয় (Live) প্রক্সিগুলোর প্রিমিয়াম ফাইল এক্সপোর্ট**\n"
         "┗ 🧠 স্মার্ট অটো-ফরম্যাট প্রক্সি ক্লিনার (ভুল টেক্সট অটো ফিল্টার)\n\n"
         "🚀 **বট ব্যবহার শুরু করতে আপনার প্রক্সি লিস্ট `.txt` ফাইলে আপলোড করুন অথবা সরাসরি চ্যাটে পেস্ট করুন!**"
@@ -83,28 +120,43 @@ def show_main_menu(message):
     markup.add(
         InlineKeyboardButton("⚙️ সিস্টেম স্ট্যাটাস", callback_data="sys_status"),
         InlineKeyboardButton("📖 প্রো-ইউজার গাইড", callback_data="sys_help"),
-        InlineKeyboardButton("⚡ প্রিমিয়াম স্পিড টেস্ট", callback_data="sys_speed"),
-        InlineKeyboardButton("📢 অফিশিয়াল চ্যানেল", url="https://t.me/rafimhossen3")
+        InlineKeyboardButton("⚡ স্পিড বেঞ্চমার্ক", callback_data="sys_speed"),
+        InlineKeyboardButton("📢 অফিশিয়াল চ্যানেল", url=CHANNEL_LINK),
+        InlineKeyboardButton("💬 ডিসকাশন গ্রুপ", url=GROUP_LINK)
     )
     bot.reply_to(message, menu_text, reply_markup=markup)
+
+@bot.callback_query_handler(func=lambda call: call.data == "check_sub")
+def verify_subscription(call):
+    user_id = call.from_user.id
+    if check_forced_subscription(user_id):
+        bot.answer_callback_query(call.id, "✅ ভেরিফিকেশন সফল হয়েছে! এখন বট ব্যবহার করতে পারবেন।", show_alert=True)
+        show_main_menu(call.message)
+    else:
+        bot.answer_callback_query(call.id, "❌ আপনি এখনো চ্যানেল বা গ্রুপে জয়েন করেননি! দয়া করে জয়েন করুন।", show_alert=True)
 
 @bot.callback_query_handler(func=lambda call: call.data in ["sys_status", "sys_help", "sys_speed"])
 def system_callbacks(call):
     if call.data == "sys_status":
-        bot.answer_callback_query(call.id, "🟢 ম্যাট্রিক্স এন্টারপ্রাইজ কোর ১০০% লাইভ, সিকিউর এবং সুপার ফাস্ট আছে!", show_alert=True)
+        bot.answer_callback_query(call.id, "🟢 ম্যাট্রিক্স মাস্টারপিস কোর ১০০% লাইভ, সিকিউর এবং সুপার ফাস্ট আছে!", show_alert=True)
     elif call.data == "sys_help":
         help_msg = (
-            "📖 **এন্টারপ্রাইজ গাইডলাইন:**\n\n"
+            "📖 **মাস্টারপিস গাইডলাইন:**\n\n"
             "১. `.txt` ফাইলে যত খুশি হাজার হাজার প্রক্সি দিন (কোনো লিমিট নেই)।\n"
             "২. প্রোটোকল সিলেক্ট করার সাথে সাথেই লাইভ লোডিং বারসহ রকেট গতিতে স্ক্যান শুরু হবে।\n"
             "৩. চেকিং শেষে বট শুধু ১০০% কাজ করা লাইভ প্রক্সিগুলোর প্রিমিয়াম ফাইল আপনার হাতে তুলে দেবে!"
         )
         bot.send_message(call.message.chat.id, help_msg)
     elif call.data == "sys_speed":
-        bot.answer_callback_query(call.id, "⚡ বর্তমান স্পিড: আল্ট্রা-সুপারসনিক (Ultrafast Asyncio Core)", show_alert=True)
+        bot.answer_callback_query(call.id, "⚡ বর্তমান স্পিড: আল্ট্রা-সুপারসনিক (Ultrafast Asyncio Core - <20 sec)", show_alert=True)
 
 @bot.message_handler(content_types=['document', 'text'])
 def handle_user_input(message):
+    user_id = message.from_user.id
+    if not check_forced_subscription(user_id):
+        show_main_menu(message)
+        return
+
     chat_id = message.chat.id
     
     if message.text and message.text.startswith('/'):
@@ -171,7 +223,7 @@ def execution_callback(call):
         protocols = ["HTTP", "HTTPS", "SOCKS4", "SOCKS5"]
 
     init_msg = bot.edit_message_text(
-        "🚀 **ENTERPRISE LOADING ENGINE INITIALIZING...**\n"
+        "🚀 **MASTERPIECE LOADING ENGINE INITIALIZING...**\n"
         "⏳ *প্রক্সি ম্যাট্রিক্স ডেটা লোড হচ্ছে, রকেট প্রস্তুত করা হচ্ছে...*", 
         chat_id, 
         call.message.message_id
@@ -185,32 +237,28 @@ async def run_supersonic_scanner(chat_id, proxies, protocols, message_id):
     tasks = []
     start_time = time.time()
     
-    connector = aiohttp.TCPConnector(limit=350, ssl=False)
+    connector = aiohttp.TCPConnector(limit=400, ssl=False)
     async with aiohttp.ClientSession(connector=connector) as session:
         for proxy in proxies:
             for p_type in protocols:
                 tasks.append(test_single_proxy(session, proxy, p_type))
         
-        # লাইভ লোডিং অ্যানিমেশন ও প্রোগ্রেস আপডেট
         total_tasks = len(tasks)
         completed = 0
         
-        # সমস্ত টাস্ক একসাথে অ্যাসিনক্রোনাসলি রান করা
-        results = []
+        # মাথা নষ্ট করা রিয়েল-টাইম ডাইনামিক লাইভ লোডিং অ্যানিমেশন লুপ
         for coro in asyncio.as_completed(tasks):
-            res = await coro
-            results.append(res)
+            await coro
             completed += 1
             
-            # প্রতি নির্দিষ্ট ইন্টারভালে মাথা নষ্ট করা লোডিং বার আপডেট করা
-            if completed % max(1, total_tasks // 10) == 0 or completed == total_tasks:
+            if completed % max(1, total_tasks // 15) == 0 or completed == total_tasks:
                 pct = int((completed / total_tasks) * 100)
                 filled = "█" * (pct // 10)
                 empty = "░" * (10 - (pct // 10))
                 
                 loading_text = (
                     f"⚡ **CYBERPUNK MATRIX SCANNING IN PROGRESS** ⚡\n\n"
-                    f"🎯 **লাইভ প্রোগ্রেস:** `[{filled}{empty}] {pct}%`\n"
+                    f"🎯 **লাইভ লোডিং প্রোগ্রেস:** `[{filled}{empty}] {pct}%`\n"
                     f"🔄 **পরীক্ষিত:** `{completed}/{total_tasks}`\n"
                     f"⏱️ **সময় অতিবাহিত:** `{round(time.time() - start_time, 1)} সেকেন্ড`\n\n"
                     f"💬 *'সুপার ফাস্ট রকেট গতিতে প্রক্সি ফিল্টারিং চলছে, অপেক্ষা করুন...'*"
@@ -220,18 +268,7 @@ async def run_supersonic_scanner(chat_id, proxies, protocols, message_id):
                 except:
                     pass
 
-    # শুধুমাত্র ১০০% কাজ করা লাইভ প্রক্সিগুলো ফিল্টার করা
-    # যেহেতু as_completed ব্যবহার করা হয়েছে, তাই আমরা সব প্রক্সি পুনরায় লুপ চালিয়ে সাজিয়ে নেব
-    # সহজভাবে আগের টাস্ক লিস্টের ডেটা আবার রি-ম্যাপ করা হচ্ছে:
-    # (এখানে সরাসরি রেজাল্ট প্রসেসিং করা হলো)
-
-    idx = 0
-    # পুনরায় সঠিক অর্ডারে ম্যাপিং করার জন্য আমরা সরাসরি aiohttp கலெকশন ব্যবহার করছি:
-    # এখানে টাস্কগুলো আবার সাজানো হচ্ছে:
-    pass # (উপরে প্রোগ্রেস দেখানো হয়েছে, এখন ফাইনাল ফাইল জেনারেট হবে)
-
-    # নতুন করে একদম নিখুঁতভাবে সব টাস্কের ফাইনাল রেজাল্ট বের করার লজিক:
-    connector_final = aiohttp.TCPConnector(limit=350, ssl=False)
+    connector_final = aiohttp.TCPConnector(limit=400, ssl=False)
     async with aiohttp.ClientSession(connector=connector_final) as session:
         final_tasks = [test_single_proxy(session, proxy, p_type) for proxy in proxies for p_type in protocols]
         final_results = await asyncio.gather(*final_tasks)
@@ -239,11 +276,11 @@ async def run_supersonic_scanner(chat_id, proxies, protocols, message_id):
     f_idx = 0
     for proxy in proxies:
         for p_type in protocols:
-            is_active, speed, country, anonymity = final_results[f_idx]
+            is_active, speed, country, anonymity, tier = final_results[f_idx]
             f_idx += 1
             
             if is_active:
-                active_results[p_type].append(f"{proxy} | Country: {country} | Anonymity: {anonymity} | Speed: {speed}ms")
+                active_results[p_type].append(f"{proxy} | Country: {country} | Tier: {tier} | Anonymity: {anonymity} | Speed: {speed}ms")
 
     total_active = sum(len(v) for v in active_results.values())
     total_time = round(time.time() - start_time, 2)
@@ -254,8 +291,8 @@ async def run_supersonic_scanner(chat_id, proxies, protocols, message_id):
         pass
 
     report = (
-        f"👑 **ENTERPRISE MATRIX MISSION REPORT** 👑\n\n"
-        f"⚡ **ইঞ্জিন:** `Supersonic Enterprise Pro v10.0`\n"
+        f"👑 **MASTERPIECE MATRIX MISSION REPORT** 👑\n\n"
+        f"⚡ **ইঞ্জিন:** `Supersonic Masterpiece Pro v12.0`\n"
         f"✅ **১০০% লাইভ ও ভ্যালিড প্রক্সি:** `{total_active}` টি\n"
         f"⏱️ **মোট সময় লেগেছে:** `{total_time} সেকেন্ড`\n\n"
     )
@@ -263,7 +300,6 @@ async def run_supersonic_scanner(chat_id, proxies, protocols, message_id):
     for p_type, plist in active_results.items():
         report += f"🔹 **{p_type}:** `{len(plist)}` টি সক্রিয়\n"
 
-    # শুধুমাত্র ১০০% লাইভ প্রক্সিগুলোর ফাইল প্রস্তুত করা (ডেড প্রক্সি বাদ!)
     live_file_content = ""
     for p_type, plist in active_results.items():
         if plist:
@@ -275,7 +311,10 @@ async def run_supersonic_scanner(chat_id, proxies, protocols, message_id):
             f.write(live_file_content.strip())
         
         markup_file = InlineKeyboardMarkup()
-        markup_file.add(InlineKeyboardButton("🔄 নতুন প্রক্সি চেক করুন", callback_data="sys_status"))
+        markup_file.add(
+            InlineKeyboardButton("🔄 নতুন প্রক্সি চেক করুন", callback_data="sys_status"),
+            InlineKeyboardButton("📢 আমাদের চ্যানেল", url=CHANNEL_LINK)
+        )
 
         with open(filename, "rb") as f:
             bot.send_document(
@@ -292,7 +331,7 @@ async def run_supersonic_scanner(chat_id, proxies, protocols, message_id):
         del user_sessions[chat_id]
 
 if __name__ == "__main__":
-    print("🌐 Flask Server & Enterprise Supersonic Engine Starting...")
+    print("🌐 Flask Server & Masterpiece Supersonic Engine Starting...")
     keep_alive()
-    print("🤖 Cyberpunk Proxy Checker Enterprise Edition v10.0 সফলভাবে লাইভ হয়েছে... 🚀")
+    print("🤖 Cyberpunk Proxy Checker Masterpiece Edition v12.0 সফলভাবে লাইভ হয়েছে... 🚀")
     bot.infinity_polling()
